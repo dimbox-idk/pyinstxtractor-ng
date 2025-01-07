@@ -243,7 +243,9 @@ class PyInstArchive:
             f.write(data)
 
     def extractFiles(self, one_dir):
-        print("[+] Beginning extraction...please standby")
+        print("[+] Beginning extraction...")
+        original_dir = os.getcwd()
+        entry_points = []
         extractionDir = os.path.join(
             os.getcwd(), os.path.basename(self.filePath) + "_extracted"
         )
@@ -280,6 +282,11 @@ class PyInstArchive:
                 # Entry point are expected to be python scripts
                 print("[+] Possible entry point: {0}.pyc".format(entry.name))
 
+                with open(os.path.join(original_dir, "temp.txt"), 'w') as f:
+                    for entry in self.tocList:
+                        f.write(f"{entry.name}.pyc" + '\n')
+                entry_points.append(f"{entry.name}.pyc")
+                
                 if self.pycMagic == b"\0" * 4:
                     # if we don't have the pyc header yet, fix them in a later pass
                     self.barePycList.append(entry.name + ".pyc")
